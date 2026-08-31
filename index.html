@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#7C6FF2" />
+  <meta name="description" content="AMYRA — companhia de apoio e bem-estar emocional." />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <title>AMYRA — Sua companhia emocional</title>
+  <style>
+    :root{--bg:#f7f7fb;--card:#fff;--text:#272538;--muted:#777489;--pri:#7568e8;--pri2:#a89ff7;--ok:#3ca37b;--warn:#e4a747;--danger:#cc4b60;--line:#e9e7f1}
+    *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;background:linear-gradient(180deg,#f3f1ff 0,#f8f8fb 35%);color:var(--text)}button,input,textarea{font:inherit}.app{max-width:760px;margin:auto;padding:18px 16px 90px}.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}.brand{font-weight:900;letter-spacing:.12em}.pill{font-size:12px;color:var(--muted);background:#fff;border:1px solid var(--line);padding:7px 10px;border-radius:999px}.hero{padding:26px;border-radius:28px;background:linear-gradient(135deg,#5f54d9,#8b7ff2);color:#fff;box-shadow:0 18px 48px #6258d329}.hero h1{font-size:29px;line-height:1.05;margin:5px 0 10px}.hero p{opacity:.9;margin:0;line-height:1.45}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px}.card h2,.card h3{margin:0 0 8px}.muted{color:var(--muted);font-size:14px;line-height:1.45}.btn{border:0;border-radius:14px;padding:12px 15px;font-weight:750;cursor:pointer}.btn.primary{background:var(--pri);color:#fff}.btn.soft{background:#eeecff;color:#554ac6}.btn.ghost{background:#fff;border:1px solid var(--line);color:var(--text)}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.moods{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px}.mood{padding:10px 4px;border:1px solid var(--line);background:#fff;border-radius:16px;text-align:center;cursor:pointer}.mood b{display:block;font-size:22px}.mood.selected{outline:2px solid var(--pri);background:#f0eeff}.progress{height:10px;background:#efedf6;border-radius:999px;overflow:hidden}.bar{height:100%;background:linear-gradient(90deg,var(--pri2),var(--pri));width:0}.nav{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);width:min(720px,calc(100% - 24px));display:grid;grid-template-columns:repeat(5,1fr);padding:8px;background:#ffffffed;backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:20px;box-shadow:0 14px 34px #28233c1b}.nav button{border:0;background:transparent;border-radius:12px;padding:8px 4px;color:var(--muted);font-size:11px}.nav button.active{color:var(--pri);background:#f0eeff;font-weight:800}.page{display:none}.page.active{display:block}.question{font-size:21px;font-weight:800;line-height:1.25;margin:14px 0}.answers{display:grid;gap:9px}.answers button{text-align:left;border:1px solid var(--line);background:#fff;border-radius:14px;padding:13px}.answers button:hover{border-color:var(--pri)}textarea,input{width:100%;border:1px solid var(--line);border-radius:14px;padding:13px;background:#fff;color:var(--text)}textarea{min-height:120px;resize:vertical}.entry{border-top:1px solid var(--line);padding:12px 0}.entry:first-child{border-top:0}.small{font-size:12px;color:var(--muted)}.score{font-size:38px;font-weight:900}.login{max-width:440px;margin:8vh auto 0}.danger{background:#fff3f5;border:1px solid #f3c4cc;color:#7e2432}.hide{display:none!important}@media(max-width:520px){.grid{grid-template-columns:1fr}.hero{padding:22px}.hero h1{font-size:26px}.moods{gap:5px}.mood span{font-size:10px}.app{padding-left:12px;padding-right:12px}}
+  </style>
+</head>
+<body>
+<div id="auth" class="app login">
+  <div class="hero"><div class="brand">AMYRA</div><h1>Como está seu coração hoje?</h1><p>Um espaço privado para registrar, entender e cuidar das suas emoções.</p></div>
+  <div class="card" style="margin-top:14px"><h2>Entrar no meu espaço</h2><p class="muted">Nesta primeira versão, seu perfil fica salvo somente neste aparelho.</p><label class="small">Seu nome</label><input id="nameInput" maxlength="40" placeholder="Como você quer ser chamado(a)?"><div class="actions"><button class="btn primary" id="enterBtn">Começar meu acompanhamento</button></div></div>
+</div>
+
+<div id="main" class="app hide">
+  <div class="top"><div><div class="brand">AMYRA</div><div class="small">sua companhia emocional</div></div><div class="pill" id="streak">1 dia cuidando de você</div></div>
+
+  <section id="home" class="page active">
+    <div class="hero"><div class="small" style="color:#fff;opacity:.8">OLÁ, <span id="userName">VOCÊ</span></div><h1 id="heroQuestion">Como você está de verdade?</h1><p>Você não precisa responder “bem”. Aqui você pode ser sincero(a).</p></div>
+    <div class="card" style="margin-top:14px"><h3>Check-in de agora</h3><p class="muted">Escolha o que mais se aproxima de como você se sente.</p><div class="moods" id="moods">
+      <button class="mood" data-v="1"><b>😞</b><span>Muito mal</span></button><button class="mood" data-v="2"><b>😔</b><span>Mal</span></button><button class="mood" data-v="3"><b>😐</b><span>Neutro</span></button><button class="mood" data-v="4"><b>🙂</b><span>Bem</span></button><button class="mood" data-v="5"><b>😊</b><span>Muito bem</span></button>
+    </div><div class="actions"><button class="btn primary" id="saveMood">Registrar como estou</button><button class="btn soft" data-go="quiz">Quero me entender melhor</button></div></div>
+    <div class="grid"><div class="card"><h3>Respiração de 1 minuto</h3><p class="muted">Uma pausa guiada para desacelerar o corpo.</p><button class="btn ghost" id="breathBtn">Começar</button><div id="breathText" class="small" style="margin-top:10px"></div></div><div class="card"><h3>Escreva sem filtro</h3><p class="muted">Coloque em palavras o que está pesado agora.</p><button class="btn ghost" data-go="journal">Abrir diário</button></div></div>
+    <div class="card danger" style="margin-top:14px"><h3>Se você estiver em risco agora</h3><p class="muted" style="color:#7e2432">A AMYRA não substitui atendimento profissional. Se houver risco de você se machucar ou de não conseguir se manter em segurança, procure ajuda presencial imediatamente. No Brasil, CVV 188 oferece apoio emocional 24 horas; em emergência, SAMU 192.</p></div>
+  </section>
+
+  <section id="quiz" class="page"><div class="card"><div class="small">MAPA EMOCIONAL • <span id="qStep">1</span>/8</div><div class="progress" style="margin-top:8px"><div class="bar" id="qBar"></div></div><div class="question" id="qText"></div><div class="answers" id="qAnswers"></div></div><div id="quizResult" class="card hide" style="margin-top:12px"></div></section>
+
+  <section id="journey" class="page"><div class="card"><h2>Minha jornada</h2><p class="muted">Seu histórico ajuda você a perceber padrões sem julgamento.</p><div id="journeyStats"></div><div id="entries"></div></div></section>
+
+  <section id="journal" class="page"><div class="card"><h2>Diário emocional</h2><p class="muted">O que aconteceu? O que você sentiu? O que você precisaria ouvir de alguém que te ama?</p><textarea id="journalText" maxlength="1200" placeholder="Hoje eu estou sentindo..."></textarea><div class="actions"><button class="btn primary" id="saveJournal">Guardar no meu diário</button></div></div><div class="card" style="margin-top:12px"><h3>Meus registros</h3><div id="journalList" class="muted">Nenhum registro ainda.</div></div></section>
+
+  <section id="profile" class="page"><div class="card"><h2>Meu espaço</h2><p class="muted">AMYRA acompanha seu bem-estar e oferece ferramentas de autocuidado. Não faz diagnóstico médico e não substitui profissionais de saúde mental.</p><div id="profileInfo"></div><div class="actions"><button class="btn ghost" id="logout">Sair</button><button class="btn ghost" id="clearData">Apagar meus dados deste aparelho</button></div></div></section>
+
+  <nav class="nav"><button class="active" data-go="home">⌂<br>Início</button><button data-go="quiz">♡<br>Quiz</button><button data-go="journey">◔<br>Jornada</button><button data-go="journal">✎<br>Diário</button><button data-go="profile">○<br>Perfil</button></nav>
+</div>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const KEY='amyra_v1';
+let state=JSON.parse(localStorage.getItem(KEY)||'null')||{name:'',moods:[],journals:[],quizzes:[]};
+const save=()=>localStorage.setItem(KEY,JSON.stringify(state));
+function boot(){if(state.name){$('#auth').classList.add('hide');$('#main').classList.remove('hide');$('#userName').textContent=state.name.toUpperCase();renderAll()}else{$('#auth').classList.remove('hide');$('#main').classList.add('hide')}}
+$('#enterBtn').addEventListener('click',()=>{const n=$('#nameInput').value.trim();if(!n)return;state.name=n;save();boot()});
+$$('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
+function go(id){$$('.page').forEach(p=>p.classList.toggle('active',p.id===id));$$('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.go===id));if(id==='journey'||id==='journal'||id==='profile')renderAll();window.scrollTo({top:0,behavior:'smooth'})}
+let mood=0;$$('.mood').forEach(b=>b.addEventListener('click',()=>{mood=+b.dataset.v;$$('.mood').forEach(x=>x.classList.toggle('selected',x===b))}));
+$('#saveMood').addEventListener('click',()=>{if(!mood){alert('Escolha como você está se sentindo.');return}state.moods.unshift({value:mood,date:new Date().toISOString()});save();$$('.mood').forEach(x=>x.classList.remove('selected'));mood=0;renderAll();alert('Registrado. Obrigado por ser sincero(a) com você.')});
+const questions=[
+ ['Nos últimos dias, quanto sua mente tem ficado acelerada ou difícil de desligar?',['Quase nada','Um pouco','Bastante','Quase o tempo todo']],
+ ['Quanto você tem sentido vontade de se afastar das pessoas ou das coisas que costumava gostar?',['Quase nada','Um pouco','Bastante','Quase o tempo todo']],
+ ['Como tem sido sua energia para fazer coisas simples do dia a dia?',['Boa','Oscila','Baixa','Muito baixa']],
+ ['Quanto preocupação ou medo tem ocupado seus pensamentos?',['Quase nada','Um pouco','Bastante','Quase o tempo todo']],
+ ['Como você tem dormido?',['Bem','Com pequenas alterações','Mal','Muito mal']],
+ ['Quando algo dá errado, como você costuma falar consigo mesmo(a)?',['Com compreensão','Às vezes me cobro','Me critico bastante','Sou muito duro(a) comigo']],
+ ['Quanto você tem sentido que consegue contar com alguém?',['Bastante','Um pouco','Muito pouco','Com ninguém']],
+ ['Hoje, quanto você sente que precisa de apoio para atravessar o que está vivendo?',['Pouco','Algum','Bastante','Preciso de ajuda agora']]
+];
+let qi=0,qa=[];
+function drawQ(){if(qi>=questions.length)return finishQuiz();$('#quizResult').classList.add('hide');$('#qStep').textContent=qi+1;$('#qBar').style.width=((qi)/questions.length*100)+'%';$('#qText').textContent=questions[qi][0];const box=$('#qAnswers');box.innerHTML='';questions[qi][1].forEach((a,i)=>{const b=document.createElement('button');b.textContent=a;b.addEventListener('click',()=>{qa.push(i);qi++;drawQ()});box.appendChild(b)})}
+function finishQuiz(){const score=qa.reduce((a,b)=>a+b,0);state.quizzes.unshift({score,date:new Date().toISOString()});save();$('#qBar').style.width='100%';$('#qText').textContent='';$('#qAnswers').innerHTML='';let title='Seu momento pede atenção e carinho',text='Você parece ter alguns sinais de sobrecarga. Use este resultado como convite para observar seus padrões e cuidar de você.';if(score<7){title='Você parece estar atravessando um momento mais leve';text='Continue observando suas emoções e preservando o que tem ajudado você.'}else if(score>=15){title='Você está carregando bastante coisa';text='Se isso estiver persistindo ou atrapalhando sua rotina, conversar com um psicólogo, psiquiatra ou outro profissional de saúde pode ser um passo importante.'}$('#quizResult').innerHTML='<h2>'+title+'</h2><p class="muted">'+text+'</p><p class="small">Este quiz é de bem-estar e não é diagnóstico clínico.</p><div class="actions"><button class="btn primary" id="again">Refazer em outro momento</button></div>';$('#quizResult').classList.remove('hide');$('#again').onclick=()=>{qi=0;qa=[];drawQ()};renderAll()}
+drawQ();
+$('#saveJournal').addEventListener('click',()=>{const t=$('#journalText').value.trim();if(!t)return;state.journals.unshift({text:t,date:new Date().toISOString()});$('#journalText').value='';save();renderAll()});
+function renderAll(){const days=new Set(state.moods.map(m=>m.date.slice(0,10))).size;$('#streak').textContent=(days||1)+' dia'+((days||1)>1?'s':'')+' cuidando de você';const avg=state.moods.length?(state.moods.reduce((a,b)=>a+b.value,0)/state.moods.length).toFixed(1):'—';$('#journeyStats').innerHTML='<div class="grid"><div><div class="score">'+avg+'</div><div class="small">média de humor / 5</div></div><div><div class="score">'+state.moods.length+'</div><div class="small">check-ins registrados</div></div></div>';$('#entries').innerHTML=state.moods.slice(0,12).map(m=>'<div class="entry"><b>'+['','Muito mal','Mal','Neutro','Bem','Muito bem'][m.value]+'</b><div class="small">'+new Date(m.date).toLocaleString('pt-BR')+'</div></div>').join('')||'<p class="muted">Seu histórico vai aparecer aqui depois do primeiro check-in.</p>';$('#journalList').innerHTML=state.journals.map(j=>'<div class="entry"><div>'+escapeHtml(j.text)+'</div><div class="small">'+new Date(j.date).toLocaleString('pt-BR')+'</div></div>').join('')||'Nenhum registro ainda.';$('#profileInfo').innerHTML='<p><b>'+escapeHtml(state.name)+'</b></p><p class="small">'+state.moods.length+' check-ins • '+state.journals.length+' registros no diário • '+state.quizzes.length+' quizzes</p>'}
+function escapeHtml(s){return s.replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+let breathing=false,timer=null;$('#breathBtn').addEventListener('click',()=>{if(breathing){breathing=false;clearInterval(timer);$('#breathBtn').textContent='Começar';$('#breathText').textContent='';return}breathing=true;$('#breathBtn').textContent='Parar';let i=0;const seq=['Inspire devagar por 4 segundos','Segure por 2 segundos','Solte o ar lentamente por 6 segundos','Perceba seus ombros relaxando'];$('#breathText').textContent=seq[0];timer=setInterval(()=>{$('#breathText').textContent=seq[++i%seq.length]},4000)});
+$('#logout').addEventListener('click',()=>{$('#main').classList.add('hide');$('#auth').classList.remove('hide')});$('#clearData').addEventListener('click',()=>{if(confirm('Apagar todos os dados salvos neste aparelho?')){localStorage.removeItem(KEY);state={name:'',moods:[],journals:[],quizzes:[]};location.reload()}});
+boot();if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script>
+</body>
+</html>
