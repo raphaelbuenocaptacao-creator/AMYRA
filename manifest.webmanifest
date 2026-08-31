@@ -1,0 +1,12 @@
+{
+  "name": "AMYRA — Sua companhia emocional",
+  "short_name": "AMYRA",
+  "description": "Apoio e acompanhamento de bem-estar emocional.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#F7F7FB",
+  "theme_color": "#7568E8",
+  "icons": [
+    {"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}
