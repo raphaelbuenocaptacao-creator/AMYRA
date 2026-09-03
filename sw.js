@@ -1,6 +1,6 @@
 const CACHE_PREFIX='amyra-';
-const CACHE=`${CACHE_PREFIX}v5-safe-shell`;
-const ASSETS=['./','./index.html','./manifest.webmanifest','./icon-192.svg','./icon-512.svg','./icon-maskable.svg'];
+const CACHE=`${CACHE_PREFIX}v6-raster-safe-shell`;
+const ASSETS=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./icon-maskable-512.png'];
 const SENSITIVE=/([?&](token|access_token|refresh_token|password|passwd|session|code|credential|credentials|api[_-]?key|secret)=)|\/(api|auth|login|logout|session|account|profile)(\/|$)/i;
 const canCacheResponse=r=>r&&r.ok&&r.status!==206&&r.type==='basic'&&!r.redirected&&!/private|no-store/i.test(r.headers.get('cache-control')||'')&&!r.headers.has('set-cookie')&&!r.headers.has('content-range');
 self.addEventListener('install',event=>event.waitUntil((async()=>{const cache=await caches.open(CACHE);for(const asset of ASSETS){try{const response=await fetch(asset,{credentials:'omit',cache:'no-store',redirect:'error'});if(canCacheResponse(response))await cache.put(asset,response.clone())}catch(_){}}await self.skipWaiting()})()));
