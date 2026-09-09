@@ -1,6 +1,6 @@
 const CACHE_PREFIX='amyra-';
-const CACHE=`${CACHE_PREFIX}v15-navigation-refresh`;
-const ASSETS=['./','./index.html','./offline.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./icon-maskable-512.png'];
+const CACHE=`${CACHE_PREFIX}v16-safety-shortcut`;
+const ASSETS=['./','./index.html','./offline.html','./safety.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./icon-maskable-512.png'];
 const SENSITIVE=/([?&](token|access_token|refresh_token|password|passwd|session|code|credential|credentials|api[_-]?key|secret)=)|\/(api|auth|login|logout|session|account|profile)(\/|$)/i;
 const variesPrivate=r=>{const vary=(r.headers.get('vary')||'').toLowerCase();return vary.split(',').some(v=>{const key=v.trim();return key==='*'||key==='cookie'||key==='authorization'});};
 const canCacheResponse=r=>r&&r.ok&&r.status!==206&&r.type==='basic'&&!r.redirected&&!/private|no-store/i.test(r.headers.get('cache-control')||'')&&!r.headers.has('set-cookie')&&!r.headers.has('content-range')&&!variesPrivate(r);
@@ -42,14 +42,16 @@ self.addEventListener('fetch',event=>{
 
   if(req.mode==='navigate'){
     event.respondWith((async()=>{
+      const cachedTarget=await caches.match(req);
       const cached=(await caches.match('./index.html'))||(await caches.match('./'));
       try{
         const preloaded=await withTimeout(event.preloadResponse,2500);
-        if(preloaded&&preloaded.ok){event.waitUntil(updateShell(preloaded));return preloaded;}
+        if(preloaded&&preloaded.ok){if(url.pathname.endsWith('/safety.html')){const cache=await caches.open(CACHE);event.waitUntil(cache.put(req,preloaded.clone()));}else{event.waitUntil(updateShell(preloaded));}return preloaded;}
         const fresh=await withTimeout(fetch(req,{cache:'no-store',redirect:'error'}),4000);
-        if(fresh&&fresh.ok)event.waitUntil(updateShell(fresh));
+        if(fresh&&fresh.ok){if(url.pathname.endsWith('/safety.html')){const cache=await caches.open(CACHE);event.waitUntil(cache.put(req,fresh.clone()));}else{event.waitUntil(updateShell(fresh));}}
         return fresh;
       }catch(_){
+        if(url.pathname.endsWith('/safety.html'))return cachedTarget||(await caches.match('./safety.html'))||cached||(await caches.match('./offline.html'));
         return cached||(await caches.match('./offline.html'))||new Response('AMYRA está offline. Respire devagar e tente novamente quando a conexão voltar.',{status:503,headers:{'Content-Type':'text/plain; charset=utf-8'}});
       }
     })());
