@@ -7,7 +7,7 @@
 <meta name="referrer" content="no-referrer"/>
 <title>AMYRA — Offline</title>
 <style>
-:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:radial-gradient(circle at 50% 28%,#25275b 0,#0d1020 34%,#050711 72%);color:#f7f8ff;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;padding:24px;text-align:center}.wrap{max-width:560px}.brand{font-weight:950;letter-spacing:.26em;font-size:14px}.orb{width:150px;height:150px;border-radius:50%;margin:28px auto;background:radial-gradient(circle at 35% 28%,#fff 0 3%,#aaf0ff 10%,#8f7cff 35%,rgba(143,124,255,.08) 70%);box-shadow:0 0 55px rgba(100,216,255,.25),0 0 100px rgba(143,124,255,.22);animation:breathe 8s ease-in-out infinite}.eyebrow{font-size:12px;letter-spacing:.14em;color:#aab2d4}.breath{font-size:clamp(30px,8vw,50px);margin:8px 0 12px}.muted{color:#aab2c7;line-height:1.6}.card{margin-top:24px;padding:18px;border-radius:22px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04)}button,.help{display:inline-block;margin-top:18px;border:1px solid rgba(255,255,255,.12);background:#171b35;color:#fff;padding:13px 18px;border-radius:16px;font:inherit;font-weight:800;cursor:pointer;text-decoration:none}.help{background:rgba(143,124,255,.16)}button:focus-visible,.help:focus-visible{outline:3px solid #aaf0ff;outline-offset:4px}.status{min-height:1.5em;margin-top:12px;color:#b9f4ff;font-size:14px}.safety-note{margin-top:20px;font-size:13px;color:#c7cdea;line-height:1.55}@keyframes breathe{0%,100%{transform:scale(.86)}50%{transform:scale(1.12)}}@media(prefers-reduced-motion:reduce){.orb{animation:none}}
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:radial-gradient(circle at 50% 28%,#25275b 0,#0d1020 34%,#050711 72%);color:#f7f8ff;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;padding:24px;text-align:center}.wrap{max-width:560px}.brand{font-weight:950;letter-spacing:.26em;font-size:14px}.orb{width:150px;height:150px;border-radius:50%;margin:28px auto;background:radial-gradient(circle at 35% 28%,#fff 0 3%,#aaf0ff 10%,#8f7cff 35%,rgba(143,124,255,.08) 70%);box-shadow:0 0 55px rgba(100,216,255,.25),0 0 100px rgba(143,124,255,.22);animation:breathe 8s ease-in-out infinite}.eyebrow{font-size:12px;letter-spacing:.14em;color:#aab2d4}.breath{font-size:clamp(30px,8vw,50px);margin:8px 0 12px}.muted{color:#aab2c7;line-height:1.6}.card{margin-top:24px;padding:18px;border-radius:22px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04)}button,.help{display:inline-block;margin-top:18px;border:1px solid rgba(255,255,255,.12);background:#171b35;color:#fff;padding:13px 18px;border-radius:16px;font:inherit;font-weight:800;cursor:pointer;text-decoration:none}.help{background:rgba(143,124,255,.16)}button:disabled{opacity:.6;cursor:wait}button:focus-visible,.help:focus-visible{outline:3px solid #aaf0ff;outline-offset:4px}.status{min-height:1.5em;margin-top:12px;color:#b9f4ff;font-size:14px}.safety-note{margin-top:20px;font-size:13px;color:#c7cdea;line-height:1.55}@keyframes breathe{0%,100%{transform:scale(.86)}50%{transform:scale(1.12)}}@media(prefers-reduced-motion:reduce){.orb{animation:none}}
 </style>
 </head>
 <body>
@@ -26,9 +26,32 @@
 <script>
 const retry=document.getElementById('retry'),status=document.getElementById('status');
 let reloading=false;
-function tryReconnect(){if(reloading)return;status.textContent='Verificando conexão…';retry.disabled=true;fetch('./index.html',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error();reloading=true;status.textContent='Conexão restabelecida. Abrindo a AMYRA…';location.replace('./');}).catch(()=>{status.textContent='Ainda sem conexão. Você pode continuar nesta pausa e tentar novamente depois.';retry.disabled=false;retry.focus();});}
+async function hasRealConnection(){
+  const controller=new AbortController();
+  const timeout=setTimeout(()=>controller.abort(),5000);
+  try{
+    const probe=`./?amyra-online-check=${Date.now()}`;
+    const response=await fetch(probe,{cache:'no-store',credentials:'omit',redirect:'error',signal:controller.signal});
+    return response.ok;
+  }catch(_){return false}finally{clearTimeout(timeout)}
+}
+async function tryReconnect(){
+  if(reloading)return;
+  status.textContent='Verificando conexão…';
+  retry.disabled=true;
+  const online=await hasRealConnection();
+  if(online){
+    reloading=true;
+    status.textContent='Conexão restabelecida. Abrindo a AMYRA…';
+    location.replace('./');
+    return;
+  }
+  status.textContent='Ainda sem conexão. Você pode continuar nesta pausa e tentar novamente depois.';
+  retry.disabled=false;
+  retry.focus();
+}
 retry.addEventListener('click',tryReconnect);
-window.addEventListener('online',()=>{status.textContent='A conexão voltou. Abrindo a AMYRA…';tryReconnect();});
+window.addEventListener('online',tryReconnect);
 </script>
 </body>
 </html>
