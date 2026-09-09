@@ -1,9 +1,60 @@
 const CACHE_PREFIX='amyra-';
-const CACHE=`${CACHE_PREFIX}v10-pwa-dark-install`;
+const CACHE=`${CACHE_PREFIX}v11-nav-preload-swr`;
 const ASSETS=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./icon-maskable-512.png'];
 const SENSITIVE=/([?&](token|access_token|refresh_token|password|passwd|session|code|credential|credentials|api[_-]?key|secret)=)|\/(api|auth|login|logout|session|account|profile)(\/|$)/i;
 const variesPrivate=r=>{const vary=(r.headers.get('vary')||'').toLowerCase();return vary.split(',').some(v=>{const key=v.trim();return key==='*'||key==='cookie'||key==='authorization'});};
 const canCacheResponse=r=>r&&r.ok&&r.status!==206&&r.type==='basic'&&!r.redirected&&!/private|no-store/i.test(r.headers.get('cache-control')||'')&&!r.headers.has('set-cookie')&&!r.headers.has('content-range')&&!variesPrivate(r);
-self.addEventListener('install',event=>event.waitUntil((async()=>{const cache=await caches.open(CACHE);for(const asset of ASSETS){try{const response=await fetch(asset,{credentials:'omit',cache:'no-store',redirect:'error'});if(canCacheResponse(response))await cache.put(asset,response.clone())}catch(_){}}await self.skipWaiting()})()));
-self.addEventListener('activate',event=>event.waitUntil((async()=>{for(const key of await caches.keys())if(key.startsWith(CACHE_PREFIX)&&key!==CACHE)await caches.delete(key);await self.clients.claim()})()));
-self.addEventListener('fetch',event=>{const req=event.request;if(req.method!=='GET')return;const url=new URL(req.url);if(url.origin!==self.location.origin)return;if(req.headers.has('authorization')||req.headers.has('cookie')||req.headers.has('range')||req.headers.has('if-range')||SENSITIVE.test(url.href))return;if(req.mode==='navigate'){event.respondWith((async()=>{try{return await fetch(req,{cache:'no-store',redirect:'error'})}catch(_){return (await caches.match('./index.html'))||Response.error()}})());return;}if(!ASSETS.some(asset=>new URL(asset,self.location.href).href===url.href))return;event.respondWith((async()=>{const cached=await caches.match(req);if(cached)return cached;const response=await fetch(req,{credentials:'omit',redirect:'error'});if(canCacheResponse(response)){const cache=await caches.open(CACHE);await cache.put(req,response.clone())}return response})())});
+const assetUrl=asset=>new URL(asset,self.location.href).href;
+const isShellAsset=url=>ASSETS.some(asset=>assetUrl(asset)===url.href);
+
+self.addEventListener('install',event=>event.waitUntil((async()=>{
+  const cache=await caches.open(CACHE);
+  for(const asset of ASSETS){
+    try{
+      const response=await fetch(asset,{credentials:'omit',cache:'no-store',redirect:'error'});
+      if(canCacheResponse(response))await cache.put(asset,response.clone());
+    }catch(_){}
+  }
+  await self.skipWaiting();
+})()));
+
+self.addEventListener('activate',event=>event.waitUntil((async()=>{
+  for(const key of await caches.keys())if(key.startsWith(CACHE_PREFIX)&&key!==CACHE)await caches.delete(key);
+  if(self.registration.navigationPreload)try{await self.registration.navigationPreload.enable()}catch(_){}
+  await self.clients.claim();
+})()));
+
+self.addEventListener('fetch',event=>{
+  const req=event.request;
+  if(req.method!=='GET')return;
+  const url=new URL(req.url);
+  if(url.origin!==self.location.origin)return;
+  if(req.headers.has('authorization')||req.headers.has('cookie')||req.headers.has('range')||req.headers.has('if-range')||SENSITIVE.test(url.href))return;
+
+  if(req.mode==='navigate'){
+    event.respondWith((async()=>{
+      try{
+        const preloaded=await event.preloadResponse;
+        if(preloaded&&preloaded.ok)return preloaded;
+        return await fetch(req,{cache:'no-store',redirect:'error'});
+      }catch(_){
+        return (await caches.match('./index.html'))||(await caches.match('./'))||new Response('AMYRA está offline e ainda não conseguiu salvar a experiência neste aparelho.',{status:503,headers:{'Content-Type':'text/plain; charset=utf-8'}});
+      }
+    })());
+    return;
+  }
+
+  if(!isShellAsset(url))return;
+  event.respondWith((async()=>{
+    const cached=await caches.match(req);
+    const refresh=fetch(req,{credentials:'omit',cache:'no-store',redirect:'error'}).then(async response=>{
+      if(canCacheResponse(response)){
+        const cache=await caches.open(CACHE);
+        await cache.put(req,response.clone());
+      }
+      return response;
+    }).catch(()=>null);
+    if(cached){event.waitUntil(refresh);return cached;}
+    return (await refresh)||Response.error();
+  })());
+});
