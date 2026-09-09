@@ -1,6 +1,6 @@
 const CACHE_PREFIX='amyra-';
-const CACHE=`${CACHE_PREFIX}v21-adaptive-experience`;
-const ASSETS=['./','./index.html','./offline.html','./safety.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./icon-maskable-512.png'];
+const CACHE=`${CACHE_PREFIX}v22-pro-trial`;
+const ASSETS=['./','./index.html','./plans.html','./offline.html','./safety.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./icon-maskable-512.png'];
 const SENSITIVE=/([?&](token|access_token|refresh_token|password|passwd|session|code|credential|credentials|api[_-]?key|secret)=)|\/(api|auth|login|logout|session|account|profile)(\/|$)/i;
 const variesPrivate=r=>{const vary=(r.headers.get('vary')||'').toLowerCase();return vary.split(',').some(v=>{const key=v.trim();return key==='*'||key==='cookie'||key==='authorization'});};
 const canCacheResponse=r=>r&&r.ok&&r.status!==206&&r.type==='basic'&&!r.redirected&&!/private|no-store/i.test(r.headers.get('cache-control')||'')&&!r.headers.has('set-cookie')&&!r.headers.has('content-range')&&!variesPrivate(r);
