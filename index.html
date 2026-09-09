@@ -113,7 +113,7 @@ $('#changePhoto').onclick=()=>{const i=document.createElement('input');i.type='f
 $('#editProfile').onclick=()=>{const n=prompt('Como quer ser chamado(a)?',state.name);if(n===null)return;const s=prompt('Seu signo (Áries, Touro, Gêmeos, Câncer, Leão, Virgem, Libra, Escorpião, Sagitário, Capricórnio, Aquário ou Peixes):',state.sign||'');state.name=n.trim()||state.name;if(s!==null&&Object.keys(signs).includes(s.trim()))state.sign=s.trim();save();renderAll()};
 $('#logout').onclick=()=>{state.name='';save();location.reload()};$('#clearData').onclick=()=>{if(confirm('Apagar todos os dados locais da AMYRA neste aparelho?')){localStorage.removeItem(KEY);localStorage.removeItem(OLD);location.reload()}};
 let installPrompt=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installPrompt=e;$('#installCard').classList.remove('hide')});$('#installBtn').onclick=async()=>{if(!installPrompt)return;installPrompt.prompt();await installPrompt.userChoice;installPrompt=null;$('#installCard').classList.add('hide')};window.addEventListener('appinstalled',()=>$('#installCard').classList.add('hide'));
-boot();if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=7-private-vary-safe-shell',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{}));
+boot();if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=8-private-vary-star-safe-shell',{updateViaCache:'none'}).then(r=>r.update()).catch(()=>{}));
 </script>
 </body>
 </html>
