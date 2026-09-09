@@ -1,7 +1,7 @@
 {
   "name": "AMYRA — Me dê 10 minutos",
   "short_name": "AMYRA",
-  "description": "Experiências imersivas de bem-estar emocional com respiração, som, voz e reflexão.",
+  "description": "Experiências imersivas de bem-estar emocional com respiração, som, voz e reflexão. Não oferece diagnóstico nem atendimento de emergência.",
   "id": "./",
   "start_url": "./",
   "scope": "./",
@@ -12,7 +12,7 @@
   "orientation": "any",
   "background_color": "#050711",
   "theme_color": "#070914",
-  "categories": ["health", "lifestyle"],
+  "categories": ["lifestyle", "productivity"],
   "prefer_related_applications": false,
   "icons": [
     {"src":"icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
