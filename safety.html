@@ -9,23 +9,26 @@
 <meta name="description" content="AMYRA — acesso rápido a ajuda humana e serviços de emergência."/>
 <title>AMYRA — Ajuda agora</title>
 <style>
-:root{color-scheme:dark;--bg:#050711;--panel:#11162a;--line:rgba(255,255,255,.18);--text:#fff;--muted:#c4cbea;--danger:#ff7f99}
-*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 10%,rgba(255,107,138,.15),transparent 30%),var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;display:grid;place-items:center;padding:20px}.card{width:min(620px,100%);background:rgba(17,22,42,.96);border:1px solid rgba(255,127,153,.38);border-radius:28px;padding:24px;box-shadow:0 24px 70px rgba(0,0,0,.35)}.brand{font-weight:950;letter-spacing:.24em;font-size:14px}.eyebrow{margin-top:18px;color:#ffafc0;font-size:12px;font-weight:900;letter-spacing:.12em}.card h1{font-size:clamp(32px,8vw,52px);line-height:1.05;margin:10px 0 14px}.card p{color:var(--muted);line-height:1.65;font-size:16px}.actions{display:grid;gap:10px;margin-top:20px}.btn{display:block;text-align:center;text-decoration:none;border:0;border-radius:17px;padding:16px 18px;font:inherit;font-weight:900;cursor:pointer;min-height:54px}.primary{background:linear-gradient(135deg,#ffb3c2,#ff7f99);color:#1d050c}.secondary{background:rgba(255,255,255,.08);border:1px solid var(--line);color:var(--text)}.note{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);font-size:14px}.btn:focus-visible{outline:4px solid white;outline-offset:4px}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}@media(prefers-contrast:more){:root{--muted:#fff}.card{background:#090b14;border:2px solid #fff}.secondary{border:2px solid #fff}.primary{background:#fff;color:#000}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+:root{color-scheme:dark;--bg:#050711;--panel:#11162a;--line:rgba(255,255,255,.18);--text:#fff;--muted:#c4cbea}*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}body{margin:0;min-height:100dvh;background:radial-gradient(circle at 50% 8%,rgba(255,107,138,.16),transparent 30%),var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;display:grid;place-items:center;padding:max(20px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right)) max(20px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left))}.card{width:min(650px,100%);background:rgba(17,22,42,.97);border:1px solid rgba(255,127,153,.4);border-radius:28px;padding:24px;box-shadow:0 24px 70px rgba(0,0,0,.35)}.brand{font-weight:950;letter-spacing:.24em;font-size:14px}.eyebrow{margin-top:18px;color:#ffafc0;font-size:12px;font-weight:900;letter-spacing:.12em}h1{font-size:clamp(32px,8vw,52px);line-height:1.05;margin:10px 0 14px}p{color:var(--muted);line-height:1.65;font-size:16px}.steps{display:grid;gap:9px;margin:18px 0}.step{display:grid;grid-template-columns:34px 1fr;gap:11px;align-items:start;padding:12px;border-radius:16px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08)}.step b:first-child{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:rgba(255,127,153,.16);color:#ffd9e1}.step span{color:#eef1ff;line-height:1.45}.actions{display:grid;gap:10px;margin-top:20px}.btn{display:block;text-align:center;text-decoration:none;border:0;border-radius:17px;padding:16px 18px;font:inherit;font-weight:900;cursor:pointer;min-height:56px}.primary{background:linear-gradient(135deg,#ffb3c2,#ff7f99);color:#1d050c}.secondary{background:rgba(255,255,255,.08);border:1px solid var(--line);color:var(--text)}.note{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);font-size:14px}.btn:focus-visible{outline:4px solid white;outline-offset:4px}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}@media(prefers-contrast:more){:root{--muted:#fff}.card{background:#090b14;border:2px solid #fff}.secondary{border:2px solid #fff}.primary{background:#fff;color:#000}}@media(max-width:480px){.card{padding:20px;border-radius:22px}.btn{font-size:16px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
 <main class="card" aria-labelledby="title" aria-describedby="safetyIntro">
-  <div class="brand" aria-label="AMYRA">AMYRA</div>
-  <div class="eyebrow">SEGURANÇA PRIMEIRO</div>
-  <h1 id="title">Ajuda humana agora.</h1>
-  <p id="safetyIntro">Se você sente que pode se machucar ou não consegue se manter em segurança, não fique sozinho(a). Afaste-se de meios de se ferir, procure uma pessoa de confiança e busque atendimento presencial.</p>
-  <p class="sr-only" role="status">Esta página oferece atalhos para ligar para serviços de ajuda no Brasil.</p>
-  <div class="actions" aria-label="Opções de ajuda imediata">
-    <a class="btn primary" href="tel:192" aria-label="Ligar agora para o SAMU no número 192">Ligar para o SAMU — 192</a>
-    <a class="btn secondary" href="tel:188" aria-label="Ligar agora para o CVV no número 188">Ligar para o CVV — 188</a>
-    <a class="btn secondary" href="./" aria-label="Voltar para a página principal da AMYRA">Voltar para a AMYRA</a>
-  </div>
-  <p class="note">No Brasil, o SAMU 192 atende emergências médicas. O CVV 188 oferece apoio emocional gratuito. A AMYRA não é um serviço de emergência e não substitui atendimento profissional.</p>
+<div class="brand" aria-label="AMYRA">AMYRA</div><div class="eyebrow">SEGURANÇA PRIMEIRO</div>
+<h1 id="title">Ajuda humana agora.</h1>
+<p id="safetyIntro">Se você sente que pode se machucar ou não consegue se manter em segurança, priorize ficar acompanhado(a) e buscar ajuda humana imediata.</p>
+<p class="sr-only" role="status">Esta página oferece passos de segurança e atalhos para serviços de ajuda no Brasil.</p>
+<div class="steps" aria-label="Passos imediatos de segurança">
+<div class="step"><b>1</b><span><b>Fique perto de alguém.</b><br>Vá até uma pessoa de confiança ou um local onde você não fique sozinho(a).</span></div>
+<div class="step"><b>2</b><span><b>Crie distância do que possa ferir você.</b><br>Se for seguro fazer isso, afaste-se de objetos, medicamentos, armas ou outros meios de se machucar.</span></div>
+<div class="step"><b>3</b><span><b>Procure atendimento presencial.</b><br>Se houver risco imediato, ligue para emergência ou vá a um pronto atendimento.</span></div>
+</div>
+<div class="actions" aria-label="Opções de ajuda imediata">
+<a class="btn primary" href="tel:192" aria-label="Ligar agora para o SAMU no número 192">Ligar para o SAMU — 192</a>
+<a class="btn secondary" href="tel:188" aria-label="Ligar agora para o CVV no número 188">Conversar com o CVV — 188</a>
+<a class="btn secondary" href="./" aria-label="Voltar para a página principal da AMYRA">Voltar para a AMYRA</a>
+</div>
+<p class="note">No Brasil, o SAMU 192 atende emergências médicas. O CVV 188 oferece apoio emocional gratuito. A AMYRA não é um serviço de emergência, não diagnostica e não substitui atendimento profissional.</p>
 </main>
 </body>
 </html>
