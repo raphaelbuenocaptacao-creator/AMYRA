@@ -63,7 +63,7 @@
     </div>
 
     <div class="grid" style="margin-top:12px">
-      <div class="card"><h3>AMYRA Voz</h3><p class="muted">A guia fala com você durante a experiência usando a voz do próprio aparelho, quando disponível.</p><button class="ghost" id="voiceTest">Ouvir AMYRA</button></div>
+      <div class="card"><h3>AMYRA Voz</h3><p class="muted">A guia prioriza a melhor voz em português disponível no aparelho, com ritmo mais natural e acolhedor.</p><button class="ghost" id="voiceTest">Ouvir nova voz</button></div>
       <div class="card"><h3>Som adaptativo</h3><p class="muted">A AMYRA gera um ambiente sonoro suave no navegador. Use fones para uma experiência mais envolvente.</p><button class="ghost" id="soundToggle">Ativar som</button></div>
       <div class="card"><h3>Seu progresso</h3><p class="muted">Compare como você entrou e como saiu, sem transformar emoções em competição.</p><button class="ghost" data-go="journey">Ver jornada</button></div>
     </div>
@@ -86,7 +86,6 @@
 
   <nav class="nav"><button class="active" data-go="home">✦ Início</button><button data-go="journal">✎ Diário</button><button data-go="journey">◔ Jornada</button><button data-go="profile">○ Perfil</button></nav>
 </div>
-
 <div id="immersive" class="overlay hide">
   <div class="phase" id="phaseLabel">ENTRADA</div>
   <div class="entity" id="journeyEntity"><div class="entity-core"></div></div>
@@ -117,8 +116,23 @@ $$('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));function go(id){$$('.
 $$('#moods .mood').forEach(b=>b.onclick=()=>{beforeMood=+b.dataset.v;$$('#moods .mood').forEach(x=>x.classList.toggle('selected',x===b));state.moods.unshift({value:beforeMood,date:new Date().toISOString()});save();render()});
 $$('#afterMoods .mood').forEach(b=>b.onclick=()=>{afterMood=+b.dataset.v;$$('#afterMoods .mood').forEach(x=>x.classList.toggle('selected',x===b))});
 $$('.world').forEach(b=>b.onclick=()=>{state.world=b.dataset.world;save();speak(`Mundo ${b.querySelector('b').textContent} selecionado.`);b.animate([{transform:'scale(.98)'},{transform:'scale(1)'}],{duration:280})});
-function speak(text){if(!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='pt-BR';u.rate=.92;u.pitch=1.03;u.volume=.84;speechSynthesis.speak(u)}catch(_){}}
-$('#voiceTest').onclick=()=>speak(`Oi ${state.name||''}. Eu sou a AMYRA. Você não precisa resolver tudo agora. Só me dê alguns minutos.`);
+let amyraVoice=null;
+function chooseAmyraVoice(){
+  const voices=speechSynthesis.getVoices?.()||[];
+  if(!voices.length)return null;
+  const pt=voices.filter(v=>/^pt(-|_)/i.test(v.lang||''));
+  const pool=pt.length?pt:voices;
+  const natural=/natural|neural|premium|enhanced|google/i;
+  const feminine=/luciana|francisca|maria|let[ií]cia|camila|fernanda|vit[oó]ria|joana|helena|madalena|female|feminina/i;
+  return [...pool].sort((a,b)=>{
+    const score=v=>(/^pt-BR$/i.test(v.lang||'')?40:0)+(natural.test(v.name||'')?25:0)+(feminine.test(v.name||'')?18:0)+(v.localService?4:0);
+    return score(b)-score(a);
+  })[0]||null;
+}
+function refreshAmyraVoice(){if('speechSynthesis' in window)amyraVoice=chooseAmyraVoice()}
+if('speechSynthesis' in window){refreshAmyraVoice();speechSynthesis.addEventListener?.('voiceschanged',refreshAmyraVoice)}
+function speak(text){if(!('speechSynthesis' in window))return;try{speechSynthesis.cancel();if(!amyraVoice)refreshAmyraVoice();const u=new SpeechSynthesisUtterance(text);u.lang=amyraVoice?.lang||'pt-BR';if(amyraVoice)u.voice=amyraVoice;u.rate=.86;u.pitch=.98;u.volume=.9;speechSynthesis.speak(u)}catch(_){}}
+$('#voiceTest').onclick=()=>speak(`Oi, ${state.name||''}. Eu sou a AMYRA. Você não precisa resolver tudo agora. Só fica aqui comigo por alguns minutos.`);
 function startAudio(){try{if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();if(master)return;master=audioCtx.createGain();master.gain.value=.045;master.connect(audioCtx.destination);osc=audioCtx.createOscillator();const g=audioCtx.createGain();osc.type='sine';osc.frequency.value=174;g.gain.value=.28;osc.connect(g);g.connect(master);osc.start()}catch(_){}}
 function stopAudio(){try{if(master){master.gain.cancelScheduledValues(audioCtx.currentTime);master.gain.linearRampToValueAtTime(0,audioCtx.currentTime+.4);setTimeout(()=>{try{osc&&osc.stop()}catch(_){};master=null;osc=null},500)}}catch(_){}}
 $('#soundToggle').onclick=()=>{state.sound=!state.sound;save();if(state.sound){startAudio();$('#soundToggle').textContent='Desativar som'}else{stopAudio();$('#soundToggle').textContent='Ativar som'}};
