@@ -51,7 +51,9 @@ async function tryReconnect(){
   retry.focus();
 }
 retry.addEventListener('click',tryReconnect);
-window.addEventListener('online',tryReconnect);
+window.addEventListener('online',()=>{
+  status.textContent='A conexão parece ter voltado. Quando quiser, use “Tentar abrir a AMYRA novamente”.';
+});
 </script>
 </body>
 </html>
