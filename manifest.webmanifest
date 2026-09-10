@@ -9,6 +9,7 @@
   "dir": "ltr",
   "display": "standalone",
   "display_override": ["window-controls-overlay", "standalone"],
+  "launch_handler": {"client_mode": "navigate-existing"},
   "orientation": "any",
   "background_color": "#050711",
   "theme_color": "#070914",
