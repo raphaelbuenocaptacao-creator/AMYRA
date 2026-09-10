@@ -18,11 +18,13 @@ async function copyHelpText() {
       if (!document.execCommand('copy')) throw new Error('copy-failed');
     }
     shareStatus.textContent = 'Mensagem copiada. Cole em uma conversa com alguém de confiança.';
+    return true;
   } catch (_) {
     helpMessage.focus();
     helpMessage.select();
     helpMessage.setSelectionRange(0, helpMessage.value.length);
     shareStatus.textContent = 'Não foi possível copiar automaticamente. A mensagem ficou selecionada para você copiar manualmente.';
+    return false;
   }
 }
 
@@ -39,8 +41,12 @@ shareBtn.addEventListener('click', async () => {
   } catch (err) {
     if (err && err.name === 'AbortError') {
       shareStatus.textContent = 'Compartilhamento cancelado. Os outros atalhos de ajuda continuam disponíveis.';
-    } else {
-      shareStatus.textContent = 'Não foi possível compartilhar agora. Use “Copiar mensagem” ou procure alguém próximo.';
+      return;
     }
+
+    // Alguns navegadores expõem Web Share, mas ainda podem falhar ao abrir
+    // o compartilhamento. Nesse caso, deixe a mensagem pronta na área de
+    // transferência (ou selecionada) sem exigir um segundo clique.
+    await copyHelpText();
   }
 });
