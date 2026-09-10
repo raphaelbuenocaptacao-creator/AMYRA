@@ -1,13 +1,13 @@
 const CACHE_PREFIX='amyra-';
-const CACHE=`${CACHE_PREFIX}v33-asset-validation`;
-const ASSETS=['./','./index.html','./plans.html','./plans/','./plans/index.html','./offline.html','./safety.html','./safety.js','./404.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./icon-maskable-512.png'];
-const CRITICAL_ASSETS=['./','./index.html','./offline.html','./safety.html','./safety.js'];
+const CACHE=`${CACHE_PREFIX}v34-offline-script-csp`;
+const ASSETS=['./','./index.html','./plans.html','./plans/','./plans/index.html','./offline.html','./offline.js','./safety.html','./safety.js','./404.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./icon-maskable-512.png'];
+const CRITICAL_ASSETS=['./','./index.html','./offline.html','./offline.js','./safety.html','./safety.js'];
 const SENSITIVE=/([?&](token|access_token|refresh_token|password|passwd|session|code|credential|credentials|api[_-]?key|secret)=)|\/(api|auth|login|logout|session|account|profile)(\/|$)/i;
 const variesPrivate=r=>{const vary=(r.headers.get('vary')||'').toLowerCase();return vary.split(',').some(v=>{const key=v.trim();return key==='*'||key==='cookie'||key==='authorization'||key==='range'||key==='if-range'});};
 const canCacheResponse=r=>r&&r.ok&&r.status!==206&&r.type==='basic'&&!r.redirected&&!/private|no-store/i.test(r.headers.get('cache-control')||'')&&!r.headers.has('set-cookie')&&!r.headers.has('content-range')&&!variesPrivate(r);
 const contentType=r=>(r.headers.get('content-type')||'').toLowerCase();
 const isHtmlResponse=r=>canCacheResponse(r)&&contentType(r).includes('text/html');
-const hasExpectedAssetType=(asset,r)=>{if(!canCacheResponse(r))return false;const type=contentType(r);if(asset==='./'||/\.html(?:$|[?#])/.test(asset)||/\/$/.test(asset))return type.includes('text/html');if(/\.webmanifest(?:$|[?#])/.test(asset))return type.includes('application/manifest+json')||type.includes('application/json');if(/\.png(?:$|[?#])/.test(asset))return type.includes('image/png');return true;};
+const hasExpectedAssetType=(asset,r)=>{if(!canCacheResponse(r))return false;const type=contentType(r);if(asset==='./'||/\.html(?:$|[?#])/.test(asset)||/\/$/.test(asset))return type.includes('text/html');if(/\.webmanifest(?:$|[?#])/.test(asset))return type.includes('application/manifest+json')||type.includes('application/json');if(/\.png(?:$|[?#])/.test(asset))return type.includes('image/png');if(/\.js(?:$|[?#])/.test(asset))return type.includes('javascript');return true;};
 const assetUrl=asset=>new URL(asset,self.location.href).href;
 const isShellAsset=url=>ASSETS.some(asset=>assetUrl(asset)===url.href);
 const scopePath=new URL(self.registration.scope).pathname.replace(/\/+$/,'')+'/';
