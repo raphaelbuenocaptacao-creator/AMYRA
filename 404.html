@@ -19,8 +19,10 @@ html,body{margin:0;min-height:100%;background:#050711;color:#f7f8ff;font-family:
     '/AMYRA/safety':'/AMYRA/safety.html'
   };
   var target=known[path];
-  if(target){location.replace(target+location.search+location.hash);return;}
-  setTimeout(function(){location.replace(base+'/'+location.search+location.hash)},1800);
+  // Redirect only to canonical AMYRA routes. Query strings and fragments are
+  // intentionally discarded so accidental sensitive text is not propagated.
+  if(target){location.replace(target);return;}
+  setTimeout(function(){location.replace(base+'/')},1800);
 })();
 </script>
 </head>
