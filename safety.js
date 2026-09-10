@@ -5,6 +5,15 @@ const helpText = helpMessage.value;
 const shareBtn = document.getElementById('shareHelp');
 const copyBtn = document.getElementById('copyHelp');
 const shareStatus = document.getElementById('shareStatus');
+let actionInProgress = false;
+
+function setActionBusy(isBusy) {
+  actionInProgress = isBusy;
+  shareBtn.disabled = isBusy;
+  copyBtn.disabled = isBusy;
+  shareBtn.setAttribute('aria-busy', String(isBusy));
+  copyBtn.setAttribute('aria-busy', String(isBusy));
+}
 
 async function copyHelpText() {
   shareStatus.textContent = '';
@@ -28,8 +37,19 @@ async function copyHelpText() {
   }
 }
 
-copyBtn.addEventListener('click', copyHelpText);
+copyBtn.addEventListener('click', async () => {
+  if (actionInProgress) return;
+  setActionBusy(true);
+  try {
+    await copyHelpText();
+  } finally {
+    setActionBusy(false);
+  }
+});
+
 shareBtn.addEventListener('click', async () => {
+  if (actionInProgress) return;
+  setActionBusy(true);
   shareStatus.textContent = '';
   try {
     if (navigator.share) {
@@ -48,5 +68,7 @@ shareBtn.addEventListener('click', async () => {
     // o compartilhamento. Nesse caso, deixe a mensagem pronta na área de
     // transferência (ou selecionada) sem exigir um segundo clique.
     await copyHelpText();
+  } finally {
+    setActionBusy(false);
   }
 });
