@@ -1,7 +1,7 @@
 const CACHE_PREFIX='amyra-';
-const CACHE=`${CACHE_PREFIX}v31-navigation-content-validation`;
-const ASSETS=['./','./index.html','./plans.html','./plans/','./plans/index.html','./offline.html','./safety.html','./404.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./icon-maskable-512.png'];
-const CRITICAL_ASSETS=['./','./index.html','./offline.html','./safety.html'];
+const CACHE=`${CACHE_PREFIX}v32-safety-csp`;
+const ASSETS=['./','./index.html','./plans.html','./plans/','./plans/index.html','./offline.html','./safety.html','./safety.js','./404.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./icon-maskable-512.png'];
+const CRITICAL_ASSETS=['./','./index.html','./offline.html','./safety.html','./safety.js'];
 const SENSITIVE=/([?&](token|access_token|refresh_token|password|passwd|session|code|credential|credentials|api[_-]?key|secret)=)|\/(api|auth|login|logout|session|account|profile)(\/|$)/i;
 const variesPrivate=r=>{const vary=(r.headers.get('vary')||'').toLowerCase();return vary.split(',').some(v=>{const key=v.trim();return key==='*'||key==='cookie'||key==='authorization'||key==='range'||key==='if-range'});};
 const canCacheResponse=r=>r&&r.ok&&r.status!==206&&r.type==='basic'&&!r.redirected&&!/private|no-store/i.test(r.headers.get('cache-control')||'')&&!r.headers.has('set-cookie')&&!r.headers.has('content-range')&&!variesPrivate(r);
