@@ -8,7 +8,7 @@
   "lang": "pt-BR",
   "dir": "ltr",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "standalone"],
+  "display_override": ["standalone"],
   "launch_handler": {"client_mode": "navigate-existing"},
   "orientation": "any",
   "background_color": "#050711",
