@@ -14,8 +14,20 @@ if (sharingReady) {
   const helpText = helpMessage.value;
   let actionInProgress = false;
   const shareData = { title: 'Preciso de ajuda agora', text: helpText };
-  const canUseWebShare = typeof navigator.share === 'function' &&
-    (typeof navigator.canShare !== 'function' || navigator.canShare(shareData));
+
+  function supportsWebShare(data) {
+    if (typeof navigator.share !== 'function') return false;
+    if (typeof navigator.canShare !== 'function') return true;
+    try {
+      return navigator.canShare(data);
+    } catch (_) {
+      // Some browsers expose canShare but can still throw for otherwise valid
+      // share data. Treat that as unavailable so the copy fallback stays usable.
+      return false;
+    }
+  }
+
+  const canUseWebShare = supportsWebShare(shareData);
 
   // On browsers without usable Web Share for this message, the same action
   // falls back to copying. Say that up front so a person in distress is not
