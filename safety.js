@@ -14,6 +14,13 @@ if (sharingReady) {
   const helpText = helpMessage.value;
   let actionInProgress = false;
 
+  // On browsers without Web Share, the same action falls back to copying.
+  // Say that up front so a person in distress is not surprised by the result.
+  if (!navigator.share) {
+    shareBtn.textContent = 'Copiar para compartilhar';
+    shareBtn.setAttribute('aria-label', 'Copiar mensagem para compartilhar com alguém de confiança');
+  }
+
   function setActionBusy(isBusy) {
     actionInProgress = isBusy;
     shareBtn.disabled = isBusy;
