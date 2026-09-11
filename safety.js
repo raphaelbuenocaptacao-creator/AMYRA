@@ -13,10 +13,14 @@ const sharingReady = Boolean(helpMessage && shareBtn && copyBtn && shareStatus);
 if (sharingReady) {
   const helpText = helpMessage.value;
   let actionInProgress = false;
+  const shareData = { title: 'Preciso de ajuda agora', text: helpText };
+  const canUseWebShare = typeof navigator.share === 'function' &&
+    (typeof navigator.canShare !== 'function' || navigator.canShare(shareData));
 
-  // On browsers without Web Share, the same action falls back to copying.
-  // Say that up front so a person in distress is not surprised by the result.
-  if (!navigator.share) {
+  // On browsers without usable Web Share for this message, the same action
+  // falls back to copying. Say that up front so a person in distress is not
+  // surprised by the result.
+  if (!canUseWebShare) {
     shareBtn.textContent = 'Copiar para compartilhar';
     shareBtn.setAttribute('aria-label', 'Copiar mensagem para compartilhar com alguém de confiança');
   }
@@ -81,8 +85,8 @@ if (sharingReady) {
     shareStatus.textContent = '';
     let fallbackResult = null;
     try {
-      if (navigator.share) {
-        await navigator.share({ title: 'Preciso de ajuda agora', text: helpText });
+      if (canUseWebShare) {
+        await navigator.share(shareData);
         shareStatus.textContent = 'Compartilhamento concluído no dispositivo. Se puder, confirme que alguém recebeu sua mensagem.';
         return;
       }
