@@ -9,3 +9,11 @@ test('offline fallback exposes immediate Brazilian crisis contacts', () => {
   assert.match(html, /href=["']tel:190["']/i, 'Polícia Militar 190 should be directly callable offline');
   assert.match(html, /href=["']tel:188["']/i, 'CVV 188 should be directly callable offline');
 });
+
+test('offline crisis contacts have a semantic heading for assistive navigation', () => {
+  assert.match(
+    html,
+    /<h2\b[^>]*id=["']offlineContactsTitle["'][^>]*>\s*Contatos imediatos no Brasil\s*<\/h2>/i,
+    'the offline crisis-contact section should expose its title as an h2'
+  );
+});
