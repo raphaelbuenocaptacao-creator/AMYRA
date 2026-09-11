@@ -41,7 +41,7 @@ if (sharingReady) {
   async function copyHelpText() {
     shareStatus.textContent = '';
     try {
-      if (navigator.clipboard && window.isSecureContext) {
+      if (typeof navigator.clipboard?.writeText === 'function' && window.isSecureContext) {
         await navigator.clipboard.writeText(helpText);
       } else {
         helpMessage.focus();
