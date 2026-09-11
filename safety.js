@@ -34,37 +34,43 @@ if (sharingReady) {
         if (!document.execCommand('copy')) throw new Error('copy-failed');
       }
       shareStatus.textContent = 'Mensagem copiada. Cole em uma conversa com alguém de confiança.';
-      return true;
+      return { copied: true, manualSelection: false };
     } catch (_) {
       helpMessage.focus();
       helpMessage.select();
       helpMessage.setSelectionRange(0, helpMessage.value.length);
       shareStatus.textContent = 'Não foi possível copiar automaticamente. A mensagem ficou selecionada para você copiar manualmente.';
-      return false;
+      return { copied: false, manualSelection: true };
     }
   }
 
   copyBtn.addEventListener('click', async () => {
     if (actionInProgress) return;
     setActionBusy(true);
+    let result;
     try {
-      await copyHelpText();
+      result = await copyHelpText();
     } finally {
       setActionBusy(false);
     }
+    // Keep keyboard/screen-reader users anchored on the action they triggered.
+    // If automatic copy failed, leave focus on the selected message so Ctrl/Cmd+C
+    // still works immediately.
+    if (result && result.copied && document.activeElement === helpMessage) copyBtn.focus();
   });
 
   shareBtn.addEventListener('click', async () => {
     if (actionInProgress) return;
     setActionBusy(true);
     shareStatus.textContent = '';
+    let fallbackResult = null;
     try {
       if (navigator.share) {
         await navigator.share({ title: 'Preciso de ajuda agora', text: helpText });
-        shareStatus.textContent = 'Pedido de ajuda aberto para compartilhamento.';
+        shareStatus.textContent = 'Pedido de ajuda compartilhado.';
         return;
       }
-      await copyHelpText();
+      fallbackResult = await copyHelpText();
     } catch (err) {
       if (err && err.name === 'AbortError') {
         shareStatus.textContent = 'Compartilhamento cancelado. Os outros atalhos de ajuda continuam disponíveis.';
@@ -74,9 +80,12 @@ if (sharingReady) {
       // Alguns navegadores expõem Web Share, mas ainda podem falhar ao abrir
       // o compartilhamento. Nesse caso, deixe a mensagem pronta na área de
       // transferência (ou selecionada) sem exigir um segundo clique.
-      await copyHelpText();
+      fallbackResult = await copyHelpText();
     } finally {
       setActionBusy(false);
+      // Preserve manual-selection fallback, otherwise restore a predictable
+      // keyboard focus position after browser share/fallback flows.
+      if (!(fallbackResult && fallbackResult.manualSelection) && document.activeElement === helpMessage) shareBtn.focus();
     }
   });
 }
