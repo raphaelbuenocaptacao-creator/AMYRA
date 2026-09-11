@@ -33,4 +33,10 @@ if(offlineControlsReady){
   window.addEventListener('online',()=>{
     status.textContent='A conexão parece ter voltado. Quando quiser, use “Tentar abrir a AMYRA novamente”.';
   });
+  window.addEventListener('pageshow',event=>{
+    if(!event.persisted)return;
+    reloading=false;
+    retry.disabled=false;
+    status.textContent='Página restaurada. Você pode tentar abrir a AMYRA novamente quando quiser.';
+  });
 }
