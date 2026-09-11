@@ -1,5 +1,5 @@
 const CACHE_PREFIX='amyra-';
-const CACHE=`${CACHE_PREFIX}v46-safety-skip-link`;
+const CACHE=`${CACHE_PREFIX}v47-offline-safety-contacts`;
 const ASSETS=['./','./index.html','./plans.html','./plans/','./plans/index.html','./offline.html','./offline.js','./safety.html','./safety.js','./404.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./icon-maskable-512.png'];
 const CRITICAL_ASSETS=['./','./index.html','./offline.html','./offline.js','./safety.html','./safety.js'];
 const SENSITIVE=/([?&](token|access_token|refresh_token|password|passwd|session|code|credential|credentials|api[_-]?key|secret)=)|\/(api|auth|login|logout|session|account|profile)(\/|$)/i;
