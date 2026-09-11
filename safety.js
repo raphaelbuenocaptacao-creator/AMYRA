@@ -29,6 +29,15 @@ if (sharingReady) {
     copyBtn.setAttribute('aria-busy', String(isBusy));
   }
 
+  // Browsers can restore this page from the back/forward cache with the exact
+  // previous DOM state. A stale "shared" message could look like a new send,
+  // so clear transient feedback and busy state only on an actual bfcache restore.
+  window.addEventListener('pageshow', event => {
+    if (!event.persisted) return;
+    shareStatus.textContent = '';
+    setActionBusy(false);
+  });
+
   async function copyHelpText() {
     shareStatus.textContent = '';
     try {
