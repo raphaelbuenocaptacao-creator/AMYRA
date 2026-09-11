@@ -67,7 +67,7 @@ if (sharingReady) {
     try {
       if (navigator.share) {
         await navigator.share({ title: 'Preciso de ajuda agora', text: helpText });
-        shareStatus.textContent = 'Pedido de ajuda compartilhado.';
+        shareStatus.textContent = 'Compartilhamento concluído no dispositivo. Se puder, confirme que alguém recebeu sua mensagem.';
         return;
       }
       fallbackResult = await copyHelpText();
