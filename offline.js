@@ -11,7 +11,10 @@ if(offlineControlsReady){
     try{
       const probe=`./?amyra-online-check=${Date.now()}`;
       const response=await fetch(probe,{cache:'no-store',credentials:'omit',redirect:'error',signal:controller.signal});
-      return response.ok;
+      const contentType=(response.headers.get('content-type')||'').toLowerCase();
+      if(!response.ok||!contentType.includes('text/html'))return false;
+      const html=await response.text();
+      return /<title>AMYRA\b/i.test(html)&&/id=["']auth["']/i.test(html);
     }catch(_){return false}finally{clearTimeout(timeout)}
   }
   async function tryReconnect(){
