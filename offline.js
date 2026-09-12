@@ -5,6 +5,11 @@ const offlineControlsReady=Boolean(retry&&status);
 // cached HTML and JavaScript briefly come from different PWA versions.
 if(offlineControlsReady){
   let reloading=false;
+  function setRetryBusy(isBusy){
+    retry.disabled=isBusy;
+    retry.setAttribute('aria-busy',String(isBusy));
+    status.setAttribute('aria-busy',String(isBusy));
+  }
   async function hasRealConnection(){
     const controller=new AbortController();
     const timeout=setTimeout(()=>controller.abort(),5000);
@@ -20,7 +25,7 @@ if(offlineControlsReady){
   async function tryReconnect(){
     if(reloading)return;
     status.textContent='Verificando conexão…';
-    retry.disabled=true;
+    setRetryBusy(true);
     const online=await hasRealConnection();
     if(online){
       reloading=true;
@@ -29,7 +34,7 @@ if(offlineControlsReady){
       return;
     }
     status.textContent='Ainda sem conexão. Você pode continuar nesta pausa e tentar novamente depois.';
-    retry.disabled=false;
+    setRetryBusy(false);
     retry.focus();
   }
   retry.addEventListener('click',tryReconnect);
@@ -39,7 +44,7 @@ if(offlineControlsReady){
   window.addEventListener('pageshow',event=>{
     if(!event.persisted)return;
     reloading=false;
-    retry.disabled=false;
+    setRetryBusy(false);
     status.textContent='Página restaurada. Você pode tentar abrir a AMYRA novamente quando quiser.';
   });
 }
