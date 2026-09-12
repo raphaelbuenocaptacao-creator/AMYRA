@@ -16,7 +16,7 @@ const isSafetyNavigation=url=>url.pathname===`${scopePath}safety`||url.pathname=
 const isPlansNavigation=url=>url.pathname===`${scopePath}plans`||url.pathname===`${scopePath}plans.html`||url.pathname===`${scopePath}plans/`||url.pathname===`${scopePath}plans/index.html`;
 const isKnownNavigation=url=>isAppShellNavigation(url)||isSafetyNavigation(url)||isPlansNavigation(url);
 const navigationCacheKey=url=>isSafetyNavigation(url)?'./safety.html':isPlansNavigation(url)?'./plans.html':'./index.html';
-const withTimeout=(promise,ms)=>Promise.race([Promise.resolve(promise),new Promise((_,reject)=>setTimeout(()=>reject(new Error('network-timeout')),ms))]);
+const withTimeout=(promise,ms)=>{let timeout;const timer=new Promise((_,reject)=>{timeout=setTimeout(()=>reject(new Error('network-timeout')),ms)});return Promise.race([Promise.resolve(promise),timer]).finally(()=>clearTimeout(timeout));};
 const fetchCacheableAsset=async asset=>{const response=await withTimeout(fetch(asset,{credentials:'omit',cache:'no-store',redirect:'error'}),5000);if(!hasExpectedAssetType(asset,response))throw new Error(`uncacheable-or-invalid-asset:${asset}`);return response;};
 const updateShell=async response=>{if(!isHtmlResponse(response))return;try{const cache=await caches.open(CACHE);await cache.put('./index.html',response.clone());await cache.put('./',response.clone())}catch(_){}};
 const updateNavigationTarget=async(url,response)=>{if(!isHtmlResponse(response))return;try{const cache=await caches.open(CACHE);await cache.put(navigationCacheKey(url),response.clone())}catch(_){}};
