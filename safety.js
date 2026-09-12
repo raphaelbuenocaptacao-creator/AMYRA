@@ -14,10 +14,13 @@ if (sharingReady) {
   const helpText = helpMessage.value;
   let actionInProgress = false;
   const shareData = { title: 'Preciso de ajuda agora', text: helpText };
-  const withTimeout = (promise, ms) => Promise.race([
-    Promise.resolve(promise),
-    new Promise((_, reject) => setTimeout(() => reject(new Error('operation-timeout')), ms))
-  ]);
+  const withTimeout = (promise, ms) => {
+    let timeout;
+    const timer = new Promise((_, reject) => {
+      timeout = setTimeout(() => reject(new Error('operation-timeout')), ms);
+    });
+    return Promise.race([Promise.resolve(promise), timer]).finally(() => clearTimeout(timeout));
+  };
 
   function supportsWebShare(data) {
     if (typeof navigator.share !== 'function') return false;
