@@ -5,7 +5,7 @@ const source = readFileSync(new URL('../safety.js', import.meta.url), 'utf8');
 
 assert.match(
   source,
-  /const withTimeout=\(promise,ms\)=>\{let timeout;[\s\S]*\.finally\(\(\)=>clearTimeout\(timeout\)\)\);\};/,
+  /const withTimeout\s*=\s*\(promise,\s*ms\)\s*=>\s*\{[\s\S]*?let timeout;[\s\S]*?\.finally\(\(\)\s*=>\s*clearTimeout\(timeout\)\)/,
   'withTimeout deve cancelar o timer depois que a operação terminar'
 );
 
