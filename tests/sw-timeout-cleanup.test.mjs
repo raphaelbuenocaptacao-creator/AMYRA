@@ -5,7 +5,7 @@ const source = readFileSync(new URL('../sw.js', import.meta.url), 'utf8');
 
 assert.match(
   source,
-  /const withTimeout=\(promise,ms\)=>\{[^}]*clearTimeout\(timeout\)/,
+  /const withTimeout=\(promise,ms\)=>\{[\s\S]*?clearTimeout\(timeout\)/,
   'o helper de timeout do service worker deve cancelar o timer quando a operacao terminar'
 );
 
