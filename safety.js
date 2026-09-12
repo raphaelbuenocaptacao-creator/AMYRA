@@ -54,25 +54,37 @@ if (sharingReady) {
     setActionBusy(false);
   });
 
+  // Selection APIs are inconsistent across older mobile browsers and embedded
+  // webviews. Keep failures here contained so the crisis-help page can still
+  // explain what to do instead of rejecting the whole copy action.
+  function selectHelpTextSafely() {
+    try {
+      helpMessage.focus();
+      helpMessage.select();
+      helpMessage.setSelectionRange(0, helpMessage.value.length);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
   async function copyHelpText() {
     shareStatus.textContent = '';
     try {
       if (typeof navigator.clipboard?.writeText === 'function' && window.isSecureContext) {
         await navigator.clipboard.writeText(helpText);
       } else {
-        helpMessage.focus();
-        helpMessage.select();
-        helpMessage.setSelectionRange(0, helpMessage.value.length);
+        if (!selectHelpTextSafely()) throw new Error('selection-failed');
         if (!document.execCommand('copy')) throw new Error('copy-failed');
       }
       shareStatus.textContent = 'Mensagem copiada. Cole em uma conversa com alguém de confiança.';
       return { copied: true, manualSelection: false };
     } catch (_) {
-      helpMessage.focus();
-      helpMessage.select();
-      helpMessage.setSelectionRange(0, helpMessage.value.length);
-      shareStatus.textContent = 'Não foi possível copiar automaticamente. A mensagem ficou selecionada para você copiar manualmente.';
-      return { copied: false, manualSelection: true };
+      const selected = selectHelpTextSafely();
+      shareStatus.textContent = selected
+        ? 'Não foi possível copiar automaticamente. A mensagem ficou selecionada para você copiar manualmente.'
+        : 'Não foi possível copiar automaticamente. Se puder, toque e segure a mensagem para copiá-la manualmente.';
+      return { copied: false, manualSelection: selected };
     }
   }
 
