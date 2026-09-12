@@ -15,7 +15,7 @@ if(offlineControlsReady){
     const timeout=setTimeout(()=>controller.abort(),5000);
     try{
       const probe=`./?amyra-online-check=${Date.now()}`;
-      const response=await fetch(probe,{cache:'no-store',credentials:'omit',redirect:'error',signal:controller.signal});
+      const response=await fetch(probe,{cache:'no-store',credentials:'omit',referrerPolicy:'no-referrer',redirect:'error',signal:controller.signal});
       const contentType=(response.headers.get('content-type')||'').toLowerCase();
       if(!response.ok||!contentType.includes('text/html'))return false;
       const html=await response.text();
