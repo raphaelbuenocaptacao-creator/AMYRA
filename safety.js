@@ -118,7 +118,10 @@ if (sharingReady) {
     let fallbackResult = null;
     try {
       if (canUseWebShare) {
-        await navigator.share(shareData);
+        // Some embedded browsers can expose Web Share yet leave its promise
+        // pending indefinitely. Bound the wait so the crisis-help controls
+        // always recover and the existing copy fallback can take over.
+        await withTimeout(navigator.share(shareData), 10000);
         shareStatus.textContent = 'Compartilhamento concluído no dispositivo. Se puder, confirme que alguém recebeu sua mensagem.';
         return;
       }
