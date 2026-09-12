@@ -1,5 +1,5 @@
 const CACHE_PREFIX='amyra-';
-const CACHE=`${CACHE_PREFIX}v61-safety-action-progress-feedback`;
+const CACHE=`${CACHE_PREFIX}v62-plans-slashless-offline`;
 const ASSETS=['./','./index.html','./plans.html','./plans/','./plans/index.html','./offline.html','./offline.js','./safety.html','./safety.js','./404.html','./manifest.webmanifest','./icon-192.png','./icon-512.png','./icon-maskable-512.png'];
 const CRITICAL_ASSETS=['./','./index.html','./offline.html','./offline.js','./safety.html','./safety.js'];
 const SENSITIVE=/([?&](token|access_token|refresh_token|password|passwd|session|code|credential|credentials|api[_-]?key|secret)=)|\/(api|auth|login|logout|session|account|profile)(\/|$)/i;
@@ -13,7 +13,7 @@ const isShellAsset=url=>ASSETS.some(asset=>assetUrl(asset)===url.href);
 const scopePath=new URL(self.registration.scope).pathname.replace(/\/+$/,'')+'/';
 const isAppShellNavigation=url=>url.pathname===scopePath||url.pathname===`${scopePath}index.html`;
 const isSafetyNavigation=url=>url.pathname===`${scopePath}safety.html`;
-const isPlansNavigation=url=>url.pathname===`${scopePath}plans.html`||url.pathname===`${scopePath}plans/`||url.pathname===`${scopePath}plans/index.html`;
+const isPlansNavigation=url=>url.pathname===`${scopePath}plans`||url.pathname===`${scopePath}plans.html`||url.pathname===`${scopePath}plans/`||url.pathname===`${scopePath}plans/index.html`;
 const isKnownNavigation=url=>isAppShellNavigation(url)||isSafetyNavigation(url)||isPlansNavigation(url);
 const navigationCacheKey=url=>isSafetyNavigation(url)?'./safety.html':isPlansNavigation(url)?'./plans.html':'./index.html';
 const withTimeout=(promise,ms)=>Promise.race([Promise.resolve(promise),new Promise((_,reject)=>setTimeout(()=>reject(new Error('network-timeout')),ms))]);
