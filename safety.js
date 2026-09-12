@@ -14,6 +14,10 @@ if (sharingReady) {
   const helpText = helpMessage.value;
   let actionInProgress = false;
   const shareData = { title: 'Preciso de ajuda agora', text: helpText };
+  const withTimeout = (promise, ms) => Promise.race([
+    Promise.resolve(promise),
+    new Promise((_, reject) => setTimeout(() => reject(new Error('operation-timeout')), ms))
+  ]);
 
   function supportsWebShare(data) {
     if (typeof navigator.share !== 'function') return false;
@@ -72,7 +76,11 @@ if (sharingReady) {
     shareStatus.textContent = '';
     try {
       if (typeof navigator.clipboard?.writeText === 'function' && window.isSecureContext) {
-        await navigator.clipboard.writeText(helpText);
+        // A few embedded browsers expose Clipboard API but can leave the
+        // returned promise pending indefinitely. Bound the wait so crisis-page
+        // controls are never left disabled forever; the catch path below then
+        // falls back to selection/legacy copy.
+        await withTimeout(navigator.clipboard.writeText(helpText), 4000);
       } else {
         if (!selectHelpTextSafely()) throw new Error('selection-failed');
         if (!document.execCommand('copy')) throw new Error('copy-failed');
