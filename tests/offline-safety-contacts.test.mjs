@@ -17,3 +17,11 @@ test('offline crisis contacts have a semantic heading for assistive navigation',
     'the offline crisis-contact section should expose its title as an h2'
   );
 });
+
+test('offline fallback distinguishes emergency services from emotional support', () => {
+  assert.match(
+    html,
+    /Risco imediato:[\s\S]*192[\s\S]*190[\s\S]*CVV 188[\s\S]*não é serviço de emergência/i,
+    'offline crisis guidance should prioritize 192/190 and identify CVV 188 as emotional support, not emergency response'
+  );
+});
