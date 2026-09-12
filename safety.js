@@ -126,7 +126,7 @@ if (sharingReady) {
         // pending indefinitely. Bound the wait so the crisis-help controls
         // always recover and the existing copy fallback can take over.
         await withTimeout(navigator.share(shareData), 10000);
-        shareStatus.textContent = 'Compartilhamento concluído no dispositivo. Se puder, confirme que alguém recebeu sua mensagem.';
+        shareStatus.textContent = 'O menu de compartilhamento foi fechado. Confirme que alguém recebeu sua mensagem; se não, use outro atalho de ajuda.';
         return;
       }
       fallbackResult = await copyHelpText();
