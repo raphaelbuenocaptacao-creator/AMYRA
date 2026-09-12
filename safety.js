@@ -73,7 +73,7 @@ if (sharingReady) {
   }
 
   async function copyHelpText() {
-    shareStatus.textContent = '';
+    shareStatus.textContent = 'Copiando mensagem…';
     try {
       if (typeof navigator.clipboard?.writeText === 'function' && window.isSecureContext) {
         // A few embedded browsers expose Clipboard API but can leave the
@@ -118,6 +118,7 @@ if (sharingReady) {
     let fallbackResult = null;
     try {
       if (canUseWebShare) {
+        shareStatus.textContent = 'Abrindo opções de compartilhamento…';
         // Some embedded browsers can expose Web Share yet leave its promise
         // pending indefinitely. Bound the wait so the crisis-help controls
         // always recover and the existing copy fallback can take over.
