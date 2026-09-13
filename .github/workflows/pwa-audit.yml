@@ -1,0 +1,73 @@
+name: AMYRA PWA Audit
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate manifest and icons
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f manifest.webmanifest
+          test -f icon-192.png
+          test -f icon-512.png
+          test -f icon-maskable-512.png
+          node <<'NODE'
+          const fs = require('fs');
+          const m = JSON.parse(fs.readFileSync('manifest.webmanifest','utf8'));
+          const required = ['name','short_name','start_url','scope','display','theme_color','background_color','icons'];
+          for (const key of required) if (!m[key]) throw new Error(`manifest missing ${key}`);
+          if (m.display !== 'standalone') throw new Error('manifest display must be standalone');
+          const icons = m.icons || [];
+          if (!icons.some(i => i.sizes === '192x192' && i.type === 'image/png')) throw new Error('missing PNG 192x192 icon');
+          if (!icons.some(i => i.sizes === '512x512' && i.type === 'image/png')) throw new Error('missing PNG 512x512 icon');
+          if (!icons.some(i => i.sizes === '512x512' && /maskable/.test(i.purpose || ''))) throw new Error('missing maskable icon');
+          NODE
+          python3 - <<'PY'
+          import struct
+          for path, expected in [('icon-192.png',(192,192)),('icon-512.png',(512,512)),('icon-maskable-512.png',(512,512))]:
+              with open(path,'rb') as f:
+                  sig=f.read(24)
+              if sig[:8] != b'\x89PNG\r\n\x1a\n':
+                  raise SystemExit(f'{path}: not PNG')
+              size=struct.unpack('>II',sig[16:24])
+              if size != expected:
+                  raise SystemExit(f'{path}: expected {expected}, got {size}')
+          PY
+      - name: Validate mobile metadata and service worker registration
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'name="viewport"' index.html
+          grep -q 'name="theme-color"' index.html
+          grep -q 'rel="manifest"' index.html
+          grep -q "serviceWorker.register('./sw.js'" index.html
+          grep -q "updateViaCache:'none'" index.html
+      - name: Validate safe versioned service worker
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Eq 'CACHE=.*v[0-9]+' sw.js
+          grep -q "headers.has('authorization')" sw.js
+          grep -q "headers.has('cookie')" sw.js
+          grep -q "headers.has('range')" sw.js
+          grep -q "headers.has('if-range')" sw.js
+          grep -q "key==='range'" sw.js
+          grep -q "key==='if-range'" sw.js
+          grep -q "headers.has('set-cookie')" sw.js
+          grep -q "headers.has('content-range')" sw.js
+          grep -q 'private|no-store' sw.js
+          grep -q 'SENSITIVE' sw.js
+          grep -q 'caches.delete' sw.js
+          grep -q 'offline.html' sw.js
+          grep -q "credentials:'omit'" sw.js
+          grep -q "cache:'no-store'" sw.js
