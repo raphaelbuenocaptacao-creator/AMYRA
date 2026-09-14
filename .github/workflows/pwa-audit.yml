@@ -2,7 +2,8 @@ name: AMYRA PWA Audit
 
 on:
   push:
-    branches: [main]
+    branches: [main, 'automation/**']
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -52,6 +53,10 @@ jobs:
           grep -q 'rel="manifest"' index.html
           grep -q "serviceWorker.register('./sw.js'" index.html
           grep -q "updateViaCache:'none'" index.html
+          grep -q "visibilitychange" index.html
+          grep -q "registration.update()" index.html
+          grep -q "controllerchange" index.html
+          grep -q "hadController" index.html
       - name: Validate safe versioned service worker
         shell: bash
         run: |
